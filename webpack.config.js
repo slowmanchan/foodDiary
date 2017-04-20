@@ -1,9 +1,43 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/Components/App.js',
+  entry: {
+    app: './src/Components/App.js',
+    vendor: ['react', 'react-dom', 'react-router', 'react-bootstrap'],
+  },
   output: {
-    filename: 'bundle.js',
+    filename: 'app.bundle.js',
     path: path.resolve(__dirname, 'static')
-  }
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin(
+      "vendor",
+      "vendor.bundle.js"
+    )
+  ],
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['react', 'es2015'],
+          plugins: ['transform-object-assign']
+        }
+      },
+      {
+        test: /\.jsx$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['react', 'es2015'],
+          plugins: ['transform-object-assign']
+        }
+      },
+    ]
+  },
+  stats: {
+    colors: true
+  },
+  devtool: 'source-map'
 };
