@@ -6,11 +6,14 @@ import {
   Route,
   Link
 } from 'react-router';
+import axios from 'axios';
 import {Panel, Navbar, Nav, NavItem} from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
 import {Jumbotron} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
-import {Col, Grid, Row, PageHeader} from 'react-bootstrap';
+import {Table, Col, Grid, Row, PageHeader} from 'react-bootstrap';
+import {Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 
 class App extends Component {
   render() {
@@ -67,11 +70,44 @@ class About extends Component {
 }
 
 class Diary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    }
+    this.loadData = this.loadData.bind(this);
+  }
+
+  loadData(query) {
+    const url = 'https://api.nal.usda.gov/ndb/search/?format=json';
+    const api_key = '&api_key=730AqE7KBQTgBoA2sh5IB77UuI6smkZdGyOdEDQd&location=Denver+CO'
+    axios.get(
+      `${url}${api_key}&q=${query}&ds=Standard+Reference&sort=n&max=200&offset=0`)
+      .then(function(res) {
+        this.setState({
+          data: res.data.list.item
+        })
+      }.bind(this))
+      .catch(function(err) {
+        console.log(err)
+      });
+  }
+
   render() {
     return (
       <div>
         <NavBar />
-        <h1>Diary</h1>
+          <Grid>
+            <Row>
+              <Col xs={12}>
+                <h1>Diaryyy</h1>
+                <Search loadData={this.loadData}/>
+                {(this.state.data.length > 0)
+                  && <FoodTable data={this.state.data}/>
+                }
+              </Col>
+          </Row>
+        </Grid>
       </div>
     )
   }
@@ -101,6 +137,90 @@ class NavBar extends Component {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+    )
+  }
+}
+
+class Search extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: ''
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({
+      search: e.target.value,
+      data: ''
+    })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.loadData(this.state.search);
+  }
+
+  render() {
+    return (
+
+      <Form inline onSubmit={this.handleSubmit}>
+        <FormGroup controlId="formSearch">
+          <ControlLabel>Search</ControlLabel>
+          <FormControl
+            type="text"
+            name="q"
+            value={this.state.search}
+            onChange={this.handleChange}
+          />
+
+        </FormGroup>
+        <Button bsStyle='success' type="submit">
+        GO
+        </Button>
+
+      </Form>
+
+    )
+  }
+}
+
+class FoodTable extends Component {
+  render() {
+    const rows = this.props.data.map(function(item, idx) {
+      return <FoodRow key={idx} item={item}/>
+    })
+
+    return (
+      <Grid>
+      <Row>
+      <Col xs={12}>
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr><th colSpan={2}>Results</th></tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </Table>
+      </Col>
+
+      </Row>
+      </Grid>
+    )
+  }
+}
+
+class FoodRow extends Component {
+
+  render() {
+    return (
+      <tr>
+        <td>{this.props.item.name}</td>
+        <td><Button bsStyle='warning'>+</Button></td>
+      </tr>
     )
   }
 }

@@ -13,7 +13,9 @@ module.exports = {
   plugins: [
     new webpack.optimize.CommonsChunkPlugin(
       "vendor",
-      "vendor.bundle.js"
+      "vendor.bundle.js",
+      Infinity
+
     )
   ],
   module: {
@@ -39,5 +41,5 @@ module.exports = {
   stats: {
     colors: true
   },
-  devtool: 'source-map'
+  devtool: 'eval-source-map'
 };
