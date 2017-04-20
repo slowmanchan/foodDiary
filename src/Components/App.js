@@ -14,6 +14,7 @@ import {Button} from 'react-bootstrap';
 import {Table, Col, Grid, Row, PageHeader} from 'react-bootstrap';
 import {Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 import {Alert} from 'react-bootstrap';
+import API_SECRET from '../../config.js';
 
 class App extends Component {
   render() {
@@ -73,16 +74,17 @@ class Diary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      foodReport: ''
     }
     this.loadData = this.loadData.bind(this);
+    this.addData = this.addData.bind(this);
   }
 
   loadData(query) {
     const url = 'https://api.nal.usda.gov/ndb/search/?format=json';
-    const api_key = '&api_key=730AqE7KBQTgBoA2sh5IB77UuI6smkZdGyOdEDQd&location=Denver+CO'
     axios.get(
-      `${url}${api_key}&q=${query}&ds=Standard+Reference&sort=n&max=200&offset=0`)
+      `${url}${API_SECRET}&q=${query}&ds=Standard+Reference&sort=n&max=200&offset=0`)
       .then(function(res) {
         this.setState({
           data: res.data.list.item
@@ -91,6 +93,22 @@ class Diary extends Component {
       .catch(function(err) {
         console.log(err)
       });
+  }
+
+  addData(foodItemNo) {
+    const url = 'https://api.nal.usda.gov/ndb/reports/?format=json'
+    axios.get(
+      `${url}${API_SECRET}&ndbno=${foodItemNo}&type=b`
+    )
+    .then(function(res){
+      this.setState({
+        foodItem: res.data.report
+      })
+      console.log(this.state.foodItem)
+    }.bind(this))
+    .catch(function(err) {
+      console.log(err)
+    });
   }
 
   render() {
@@ -102,9 +120,10 @@ class Diary extends Component {
               <Col xs={12}>
                 <h1>Diaryyy</h1>
                 <Search loadData={this.loadData}/>
-                {(this.state.data.length > 0)
-                  && <FoodTable data={this.state.data}/>
-                }
+                <FoodTable
+                        addData={this.addData}
+                        data={this.state.data}/>
+
               </Col>
           </Row>
         </Grid>
@@ -190,13 +209,15 @@ class Search extends Component {
 class FoodTable extends Component {
   render() {
     const rows = this.props.data.map(function(item, idx) {
-      return <FoodRow key={idx} item={item}/>
-    })
+      return <FoodRow
+                addData={this.props.addData}
+                key={idx}
+                item={item}
+                />
+    }.bind(this))
 
     return (
-      <Grid>
-      <Row>
-      <Col xs={12}>
+
       <Table striped bordered condensed hover>
         <thead>
           <tr><th colSpan={2}>Results</th></tr>
@@ -205,21 +226,34 @@ class FoodTable extends Component {
           {rows}
         </tbody>
       </Table>
-      </Col>
 
-      </Row>
-      </Grid>
     )
   }
 }
 
+
+
 class FoodRow extends Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick() {
+    this.props.addData(this.props.item.ndbno)
+  }
 
   render() {
     return (
       <tr>
         <td>{this.props.item.name}</td>
-        <td><Button bsStyle='warning'>+</Button></td>
+        <td>
+          <Button
+            bsStyle='warning'
+            onClick={this.handleClick}
+            >+
+          </Button>
+        </td>
       </tr>
     )
   }
