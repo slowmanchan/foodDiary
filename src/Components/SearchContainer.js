@@ -31,8 +31,10 @@ class SearchContainer extends Component {
         })
       }.bind(this))
       .catch(function(err) {
-        console.log(err)
-      });
+        this.setState({
+          alertVisible: true
+        })
+      }.bind(this));
   }
 
   addData(foodItemNo) {
@@ -69,6 +71,7 @@ class SearchContainer extends Component {
               <Col xs={12}>
               {this.state.alertVisible &&
               <AlertDismissable/> }
+
                 <h1>Diaryyy</h1>
                 <SearchBar loadData={this.loadData}/>
                 <br/>
