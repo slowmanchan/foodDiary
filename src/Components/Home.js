@@ -10,16 +10,19 @@ class Home extends Component {
     return (
       <div>
         <NavBar />
-
-
-        <Jumbotron>
-          <h1>The Foodiary</h1>
-          <p>The beginnings of a great fsdfood diary</p>
-          <LinkContainer to='/search'>
-            <Button bsStyle='success'>Do it</Button>
-          </LinkContainer>
-        </Jumbotron>
-        
+        <Grid fluid>
+          <Row>
+            <Col xs={12}>
+              <Jumbotron>
+                <h1>The Foodiary</h1>
+                <p>The beginnings of a great fsdfood diary</p>
+                <LinkContainer to='/search'>
+                  <Button bsStyle='success'>Do it</Button>
+                </LinkContainer>
+              </Jumbotron>
+            </Col>
+          </Row>
+        </Grid>
       </div>
     )
   }

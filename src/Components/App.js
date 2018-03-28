@@ -9,21 +9,27 @@ import {
 import Home from './Home';
 import About from './About';
 import FoodLog from './FoodLog';
+import Stats from './Stats';
 import SearchContainer from './SearchContainer';
-import NavBar from './NavBar';
+
 // import Routes from './Routes';
 
 class App extends Component {
   render() {
     return (
-      <Router history={hashHistory}>
-        <NavBar />
-        <Route path='/' component={Home}/>
-        <Route path='/food-logs' component={FoodLog}/>
-        <Route path='/about' component={About}/>
-        <Route path='/search' component={SearchContainer}/>
+      <div>
 
-      </Router>
+        <Router history={hashHistory}>
+
+          <div>
+            <Route path='/' component={Home}/>
+            <Route path='/stats' component={Stats} />
+            <Route path='/food-logs' component={FoodLog}/>
+            <Route path='/about' component={About}/>
+            <Route path='/search' component={SearchContainer}/>
+          </div>
+        </Router>
+      </div>
     )
   }
 }

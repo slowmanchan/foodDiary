@@ -6,7 +6,7 @@ import {
   Grid, Col, Row
 } from 'react-bootstrap';
 import AlertDismissable from './AlertDismissable';
-const API_SECRET = 'T0sL90hjIuAX8XKABVoixwOGeGb0PKq9YrEViEx7';
+const API_SECRET = 'api_key=T0sL90hjIuAX8XKABVoixwOGeGb0PKq9YrEViEx7';
 import FoodTable from './FoodTable';
 
 class SearchContainer extends Component {
@@ -15,7 +15,9 @@ class SearchContainer extends Component {
     this.state = {
       data: [],
       foodReport: '',
-      alertVisible: false
+      alertVisible: false,
+      message: '',
+      bsStyle: ''
     }
     this.loadData = this.loadData.bind(this);
     this.addData = this.addData.bind(this);
@@ -24,7 +26,7 @@ class SearchContainer extends Component {
   loadData(query) {
     const url = 'https://api.nal.usda.gov/ndb/search/?format=json';
     axios.get(
-      `${url}${API_SECRET}&q=${query}&ds=Standard+Reference&sort=n&max=200&offset=0`)
+      `${url}&${API_SECRET}&q=${query}&ds=Standard+Reference&sort=n&max=200&offset=0`)
       .then(function(res) {
         this.setState({
           data: res.data.list.item
@@ -32,7 +34,9 @@ class SearchContainer extends Component {
       }.bind(this))
       .catch(function(err) {
         this.setState({
-          alertVisible: true
+          alertVisible: true,
+          message: 'Search returned no results',
+          bsStyle: 'danger'
         })
       }.bind(this));
   }
@@ -40,7 +44,7 @@ class SearchContainer extends Component {
   addData(foodItemNo) {
     const url = 'https://api.nal.usda.gov/ndb/reports/?format=json'
     axios.get(
-      `${url}${API_SECRET}&ndbno=${foodItemNo}&type=b`
+      `${url}&${API_SECRET}&ndbno=${foodItemNo}&type=b`
     )
     .then(function(res){
       this.setState({
@@ -49,7 +53,9 @@ class SearchContainer extends Component {
       axios.post('/', this.state.foodReport)
         .then(function(res) {
           this.setState({
-            alertVisible: true
+            alertVisible: true,
+            message: 'Food added successfully',
+            bsStyle: 'success'
           })
         }.bind(this))
         .catch(function(err) {
@@ -66,20 +72,23 @@ class SearchContainer extends Component {
       <div>
         <NavBar />
 
-          <Grid>
-            <Row>
-              <Col xs={12}>
+        <Grid>
+          <Row>
+            <Col xs={12}>
               {this.state.alertVisible &&
-              <AlertDismissable/> }
+                <AlertDismissable
+                  message={this.state.message}
+                  bsStyle={this.state.bsStyle}
+                /> }
 
-                <h1>Diaryyy</h1>
-                <SearchBar loadData={this.loadData}/>
-                <br/>
-                {this.state.data.length > 0 && <FoodTable
-                        addData={this.addData}
-                        data={this.state.data}/>}
+              <h1>Diary</h1>
+              <SearchBar loadData={this.loadData}/>
+              <br/>
+              {this.state.data.length > 0 && <FoodTable
+                addData={this.addData}
+                data={this.state.data}/>}
 
-              </Col>
+            </Col>
           </Row>
         </Grid>
       </div>
