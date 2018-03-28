@@ -28,11 +28,11 @@ app.get('/api/food-logs', function(req, res, next) {
   })
 })
 
-MongoClient.connect('mongodb://localhost/foodsdb', function(err, dbConnection) {
+MongoClient.connect('mongodb://heroku_nmx8ntgb:2m3nfbkcghfkm4uuot0aulchhp@ds127129.mlab.com:27129/heroku_nmx8ntgb', function(err, dbConnection) {
   assert.equal(null, err);
   console.log('Connected to Mr. Mongo');
   db = dbConnection;
-  app.listen(3000, function() {
+  app.listen(process.env.PORT || 3000, function() {
     console.log("Arrrr matey, the server has started on ye port 3000")
   });
 });
