@@ -1,9 +1,10 @@
+import React, {Component} from 'react';
 import {
   Navbar, Nav, NavItem
 } from 'react-bootstrap';
 import {Link} from 'react-router';
 import {LinkContainer} from 'react-router-bootstrap';
-import React, {Component} from 'react';
+
 
 class NavBar extends Component {
   render() {

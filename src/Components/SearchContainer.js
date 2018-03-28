@@ -6,7 +6,7 @@ import {
   Grid, Col, Row
 } from 'react-bootstrap';
 import AlertDismissable from './AlertDismissable';
-import API_SECRET from '../../config.js';
+const API_SECRET = 'T0sL90hjIuAX8XKABVoixwOGeGb0PKq9YrEViEx7';
 import FoodTable from './FoodTable';
 
 class SearchContainer extends Component {

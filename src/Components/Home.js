@@ -10,19 +10,16 @@ class Home extends Component {
     return (
       <div>
         <NavBar />
-        <Grid fluid>
-         <Row>
-          <Col xs={12}>
+
+
         <Jumbotron>
           <h1>The Foodiary</h1>
-          <p>The beginnings of a great food diary</p>
+          <p>The beginnings of a great fsdfood diary</p>
           <LinkContainer to='/search'>
             <Button bsStyle='success'>Do it</Button>
           </LinkContainer>
         </Jumbotron>
-        </Col>
-        </Row>
-        </Grid>
+        
       </div>
     )
   }
